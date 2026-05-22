@@ -312,7 +312,7 @@ namespace The_Long_Dark_Save_Editor_2.Game_data
         public string m_InspectSerialized { get; set; }
         public bool m_StoneItemThrown { get; set; }
 
-        public static GearItemSaveDataProxy Create()
+        public static GearItemSaveDataProxy Create(GlobalSaveGameFormat global)
         {
             var item = new GearItemSaveDataProxy();
             item.m_Rotation = new float[4];
@@ -320,10 +320,10 @@ namespace The_Long_Dark_Save_Editor_2.Game_data
             item.m_BeenInPlayerInventoryProxy = true;
             item.NormalizedCondition = 1;
             item.m_WornOut = false;
-            item.m_HoursPlayed = MainWindow.Instance.CurrentSave.Global.TimeOfDay.m_HoursPlayedNotPausedProxy;
+            item.m_HoursPlayed = global.TimeOfDay.m_HoursPlayedNotPausedProxy;
             var r = new Random();
             var id = r.Next();
-            while (MainWindow.Instance.CurrentSave.Global.Inventory.Items.Any(i => i.Gear.m_InstanceIDProxy == id))
+            while (global.Inventory.Items.Any(i => i.Gear.m_InstanceIDProxy == id))
                 id = r.Next();
             item.m_InstanceIDProxy = id;
             item.m_NonInteractive = false;

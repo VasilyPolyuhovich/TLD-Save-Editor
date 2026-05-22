@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Long Dark — Save Editor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>The Long Dark — Save Editor</h1>
+    <span id="status" class="status"></span>
+  </header>
+
+  <main>
+    <aside id="sidebar">
+      <div class="folder-row">
+        <label>Saves folder</label>
+        <input id="folder" type="text" spellcheck="false" />
+        <button id="rescan">Rescan</button>
+      </div>
+      <ul id="saveList" class="save-list"></ul>
+    </aside>
+
+    <section id="editor" class="editor hidden">
+      <div class="loaded-bar">
+        <span id="loadedName"></span>
+        <div class="bar-actions">
+          <select id="backupSelect" title="Backups of this save"></select>
+          <button id="restoreBtn">Restore</button>
+          <button id="saveBtn" class="primary">Apply &amp; Save</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="player">Player</button>
+        <button class="tab" data-tab="skills">Skills</button>
+        <button class="tab" data-tab="inventory">Inventory</button>
+        <button class="tab" data-tab="afflictions">Afflictions</button>
+        <button class="tab" data-tab="map">Map</button>
+        <button class="tab" data-tab="profile">Profile</button>
+      </div>
+
+      <div id="tab-player" class="tab-panel">
+        <div class="grid">
+          <label>Region</label>
+          <select id="region"></select>
+
+          <label>Experience mode</label>
+          <select id="expMode"></select>
+
+          <label>Custom mode string</label>
+          <input id="customMode" type="text" spellcheck="false" />
+
+          <label>Health</label>
+          <div class="slider"><input id="health" type="range" min="0" max="100" step="1" /><output id="healthOut"></output></div>
+
+          <label>Thirst</label>
+          <div class="slider"><input id="thirst" type="range" min="0" max="100" step="1" /><output id="thirstOut"></output></div>
+
+          <label>Fatigue</label>
+          <div class="slider"><input id="fatigue" type="range" min="0" max="100" step="1" /><output id="fatigueOut"></output></div>
+
+          <label>Freezing</label>
+          <div class="slider"><input id="freezing" type="range" min="0" max="100" step="1" /><output id="freezingOut"></output></div>
+
+          <label>Calories</label>
+          <input id="calories" type="number" step="1" />
+
+          <label>Position (X / Y / Z)</label>
+          <div class="pos">
+            <input id="posX" type="number" step="0.01" />
+            <input id="posY" type="number" step="0.01" />
+            <input id="posZ" type="number" step="0.01" />
+          </div>
+
+          <label>Options</label>
+          <div class="checks">
+            <label><input id="neverDie" type="checkbox" /> Never die</label>
+            <label><input id="invulnerable" type="checkbox" /> Invulnerable</label>
+            <label><input id="infiniteCarry" type="checkbox" /> Infinite carry weight</label>
+          </div>
+
+          <label>Carry weight limit (kg)</label>
+          <input id="carryWeight" type="number" step="0.1" title="Used when 'Infinite carry weight' is enabled" />
+        </div>
+      </div>
+
+      <div id="tab-inventory" class="tab-panel hidden">
+        <div class="add-row">
+          <select id="addItem"></select>
+          <button id="addBtn">Add item</button>
+          <span id="invCount" class="muted-note"></span>
+        </div>
+        <table class="inv-table">
+          <thead><tr>
+            <th>Item</th><th>Category</th><th>Condition&nbsp;%</th>
+            <th title="Stack quantity — matches, ammo, tinder, etc.">Qty</th>
+            <th title="Litres of water / liquid / lamp fuel">Liters</th>
+            <th title="Rounds currently loaded in the firearm">In&nbsp;clip</th>
+            <th></th>
+          </tr></thead>
+          <tbody id="invBody"></tbody>
+        </table>
+      </div>
+
+      <div id="tab-skills" class="tab-panel hidden">
+        <div class="grid" id="skillsGrid"></div>
+      </div>
+
+      <div id="tab-afflictions" class="tab-panel hidden">
+        <div class="add-row">
+          <button id="cureAllBtn">Cure all (negative)</button>
+        </div>
+        <table class="inv-table">
+          <thead><tr><th>Affliction</th><th>Type</th><th></th></tr></thead>
+          <tbody id="afflBody"></tbody>
+        </table>
+      </div>
+
+      <div id="tab-map" class="tab-panel hidden">
+        <p id="mapInfo" class="muted-note"></p>
+        <div id="mapWrap" class="map-wrap">
+          <img id="mapImg" alt="region map" />
+          <img id="mapMarker" class="map-marker" src="/maps/location-indicator.png" alt="player position" />
+        </div>
+      </div>
+
+      <div id="tab-profile" class="tab-panel hidden">
+        <p id="profileNote" class="muted-note hidden">No profile (user001) found next to this save — feats/badges unavailable.</p>
+        <div class="grid" id="profileGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

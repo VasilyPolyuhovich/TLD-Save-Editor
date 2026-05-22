@@ -4,3 +4,6 @@
 *.user
 The Long Dark Save Editor 2/bin/
 The Long Dark Save Editor 2/obj/
+# Build output for all projects (Core/Server live under src/)
+[Bb]in/
+[Oo]bj/
