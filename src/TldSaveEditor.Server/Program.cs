@@ -48,7 +48,7 @@ api.MapPost("/inventory/add", (SaveEditorService svc, AddItemRequest req) =>
     Guard(() => { svc.AddItem(req.PrefabName); return Results.Ok(); }));
 
 api.MapPut("/inventory/{instanceId:int}", (SaveEditorService svc, int instanceId, UpdateItemRequest req) =>
-    Guard(() => { svc.UpdateItem(instanceId, req.Condition, req.Quantity, req.Liters, req.Rounds); return Results.Ok(); }));
+    Guard(() => { svc.UpdateItem(instanceId, req); return Results.Ok(); }));
 
 api.MapDelete("/inventory/{instanceId:int}", (SaveEditorService svc, int instanceId) =>
     Guard(() => { svc.RemoveItem(instanceId); return Results.Ok(); }));
@@ -109,11 +109,20 @@ static void OpenBrowser(string target)
     catch { /* no browser available (headless) — the URL is printed above */ }
 }
 
-// Turns service exceptions into clean 400s instead of 500 stack traces.
+// Maps service exceptions to appropriate status codes. Known/expected exceptions carry a
+// safe, user-facing message; anything unexpected returns a generic 500 (the detail is logged
+// server-side, not echoed to the client).
 static IResult Guard(Func<IResult> action)
 {
     try { return action(); }
-    catch (Exception ex) { return Results.BadRequest(new { error = ex.Message }); }
+    catch (FileNotFoundException ex) { return Results.NotFound(new { error = ex.Message }); }
+    catch (InvalidOperationException ex) { return Results.Conflict(new { error = ex.Message }); }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+    catch (Exception ex)
+    {
+        Console.Error.WriteLine(ex);
+        return Results.Problem("Unexpected error while processing the save.", statusCode: 500);
+    }
 }
 
 record FolderRequest(string Folder);

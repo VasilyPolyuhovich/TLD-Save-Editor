@@ -308,8 +308,8 @@ async function loadItems() {
 async function loadInventory() {
   const items = await api("GET", "/api/inventory");
   const body = $("invBody");
-  body.innerHTML = "";
   $("invCount").textContent = `${items.length} item${items.length === 1 ? "" : "s"}`;
+  const frag = document.createDocumentFragment();
   for (const it of items) {
     const tr = document.createElement("tr");
     tr.appendChild(cell(esc(it.displayName)));
@@ -335,8 +335,9 @@ async function loadInventory() {
     btn.className = "link"; btn.textContent = "Remove";
     btn.onclick = () => removeItem(it.instanceId);
     td.appendChild(btn); tr.appendChild(td);
-    body.appendChild(tr);
+    frag.appendChild(tr);
   }
+  body.replaceChildren(frag);
 }
 
 function wrapTd(el) { const td = document.createElement("td"); td.appendChild(el); return td; }

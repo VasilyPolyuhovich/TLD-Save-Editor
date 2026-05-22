@@ -62,13 +62,9 @@ namespace The_Long_Dark_Save_Editor_2
 
         public MainWindow()
         {
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
-            {
-                //MissingMemberHandling = MissingMemberHandling.Error,
-                FloatFormatHandling = FloatFormatHandling.Symbol,
-                // Serialize byte arrays as arrays of numbers instead of base64
-                Converters = new List<JsonConverter> { new ByteArrayConverter() },
-            };
+            // JsonConvert.DefaultSettings (FloatFormatHandling.Symbol + ByteArrayConverter) is
+            // configured once in GameSave's static constructor so the WPF app and the web server
+            // share a single definition.
 
 #if DEBUG
             IsDebug = true;

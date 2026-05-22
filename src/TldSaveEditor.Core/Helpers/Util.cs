@@ -19,8 +19,6 @@ namespace The_Long_Dark_Save_Editor_2.Helpers
 
     public static class Util
     {
-        private static readonly object IsDebug;
-
         public static T DeserializeObject<T>(string json) where T : class
         {
 

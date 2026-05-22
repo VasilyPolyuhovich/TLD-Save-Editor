@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using The_Long_Dark_Save_Editor_2.Game_data;
 using The_Long_Dark_Save_Editor_2.Helpers;
 using The_Long_Dark_Save_Editor_2.Serialization;
@@ -11,6 +13,20 @@ namespace The_Long_Dark_Save_Editor_2
     public class GameSave
     {
         public static int MAX_BACKUPS = 20;
+
+        // The game's JSON uses bareword Infinity/NaN for some floats and number-arrays for byte
+        // data. DynamicSerializable.Serialize() relies on JsonConvert.DefaultSettings to write
+        // them back the same way; without this, saving turns Infinity into the string "Infinity"
+        // (which then fails to re-parse) and byte arrays into base64 — both corrupt the save.
+        // Defined here so every consumer (WPF app and web server) shares one definition.
+        static GameSave()
+        {
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                FloatFormatHandling = FloatFormatHandling.Symbol,
+                Converters = new List<JsonConverter> { new ByteArrayConverter() },
+            };
+        }
 
         public long LastSaved { get; set; }
         private DynamicSerializable<BootSaveGameFormat> dynamicBoot;
@@ -69,7 +85,7 @@ namespace The_Long_Dark_Save_Editor_2
             File.WriteAllBytes(this.path, EncryptString.Compress(slotDataSerialized));
         }
 
-        private void Backup()
+        public void Backup()
         {
             var backupDirectory = Path.Combine(Path.GetDirectoryName(this.path), "backups");
             Directory.CreateDirectory(backupDirectory);
